@@ -28,11 +28,12 @@ const DRIFT_DOMAINS = [
   
   function captureWorkTabs(callback) {
     chrome.tabs.query({}, (tabs) => {
-      const workTabs = tabs.filter(t => {
-        if (!t.url) return false;
-        const type = classifyDomain(t.url);
-        return type === "work" || type === "neutral";
-      }).map(t => ({
+        const workTabs = tabs.filter(t => {
+            if (!t.url) return false;
+            if (t.url.startsWith("chrome://")) return false;
+            const type = classifyDomain(t.url);
+            return type === "work" || type === "neutral";
+          }).map(t => ({
         id: t.id,
         url: t.url,
         title: t.title,
@@ -42,19 +43,39 @@ const DRIFT_DOMAINS = [
     });
   }
   
+  function getSnippetFromTab(tabId, callback) {
+    chrome.tabs.sendMessage(tabId, { action: "getPageSnippet" }, (response) => {
+      if (chrome.runtime.lastError || !response) {
+        callback(null);
+      } else {
+        callback(response);
+      }
+    });
+  }
+  
   function triggerSnapshot() {
     captureWorkTabs((workTabs) => {
-      const snapshot = {
-        id: Date.now(),
-        timestamp: Date.now(),
-        workTabs: workTabs,
-        summary: null // will be filled by backend later
-      };
-      chrome.storage.local.get({ snapshots: [] }, (result) => {
-        const snapshots = result.snapshots;
-        snapshots.push(snapshot);
-        chrome.storage.local.set({ snapshots }, () => {
-          console.log("Snapshot saved! Work tabs:", workTabs.length);
+      // Get snippet from the most recent work tab
+      const topTab = workTabs[0];
+      if (!topTab) return;
+  
+      getSnippetFromTab(topTab.id, (snippetData) => {
+        const snapshot = {
+          id: Date.now(),
+          timestamp: Date.now(),
+          workTabs: workTabs,
+          activeTab: {
+            ...topTab,
+            snippet: snippetData ? snippetData.snippet : ""
+          },
+          summary: null
+        };
+        chrome.storage.local.get({ snapshots: [] }, (result) => {
+          const snapshots = result.snapshots;
+          snapshots.push(snapshot);
+          chrome.storage.local.set({ snapshots }, () => {
+            console.log("Snapshot saved with snippet! Work tabs:", workTabs.length);
+          });
         });
       });
     });
