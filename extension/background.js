@@ -73,12 +73,38 @@ let activeTabUrl = null;
           summary: null
         };
         chrome.storage.local.get({ snapshots: [] }, (result) => {
-          const snapshots = result.snapshots;
-          snapshots.push(snapshot);
-          chrome.storage.local.set({ snapshots }, () => {
-            console.log("Snapshot saved with snippet! Work tabs:", workTabs.length);
+            const snapshots = result.snapshots;
+            snapshots.push(snapshot);
+            chrome.storage.local.set({ snapshots }, () => {
+              console.log("Snapshot saved with snippet! Work tabs:", workTabs.length);
+              // Call backend for AI summary
+              fetch("http://localhost:8000/summarize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  tabs: workTabs.map(t => ({
+                    url: t.url,
+                    title: t.title,
+                    domain: t.domain,
+                    snippet: ""
+                  })),
+                  active_tab_snippet: snapshot.activeTab.snippet || ""
+                })
+              })
+              .then(r => r.json())
+              .then(data => {
+                if (data.summary) {
+                  snapshot.summary = data.summary;
+                  const updated = result.snapshots.map(s =>
+                    s.id === snapshot.id ? snapshot : s
+                  );
+                  chrome.storage.local.set({ snapshots: updated });
+                  console.log("AI summary saved:", data.summary);
+                }
+              })
+              .catch(err => console.log("Backend not available, using fallback:", err));
+            });
           });
-        });
       });
     });
   }
