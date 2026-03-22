@@ -1,0 +1,16 @@
+body {
+    width: 300px;
+    padding: 16px;
+    font-family: sans-serif;
+    background: #fff;
+  }
+  
+  h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: #555;
+  }

@@ -1,0 +1,1 @@
+console.log("Rabbit Hole Ramp content script loaded on:", window.location.hostname);
