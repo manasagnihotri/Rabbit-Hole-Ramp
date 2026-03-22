@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rabbit Hole Ramp — Hop back to deep work</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1a202c;
+      --text-secondary: #4a5568;
+      --accent: #4299e1;
+      --powder-blue: #b0d6e8;
+      --cta: #48bb78;
+      --cta-hover: #38a169;
+      --danger: #fc8181;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* --- NAV --- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--powder-blue);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .nav-cta {
+      background: var(--cta);
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .nav-cta:hover { background: var(--cta-hover); }
+
+    /* --- HERO --- */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--powder-blue);
+      color: #2c5f7a;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      background: var(--cta);
+      color: #fff;
+      padding: 14px 36px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 12px rgba(72,187,120,0.35);
+    }
+
+    .hero-cta:hover {
+      background: var(--cta-hover);
+      transform: translateY(-1px);
+    }
+
+    /* --- FLOW VISUAL --- */
+    .flow-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px auto;
+      max-width: 640px;
+      flex-wrap: nowrap;
+    }
+
+    .flow-step {
+      text-align: center;
+    }
+
+    .flow-emoji {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .flow-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .flow-arrow {
+      font-size: 24px;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* --- BEFORE/AFTER --- */
+    .before-after {
+      max-width: 860px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .before-after { grid-template-columns: 1fr; }
+    }
+
+    .ba-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--border);
+    }
+
+    .ba-card.after { border-top-color: var(--cta); }
+    .ba-card.before { border-top-color: var(--danger); }
+
+    .ba-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .ba-card.before .ba-label { color: var(--danger); }
+    .ba-card.after .ba-label { color: var(--cta); }
+
+    .ba-card p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* --- HOW IT WORKS --- */
+    .section {
+      max-width: 860px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .step-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* --- INSIGHT --- */
+    .insight {
+      background: linear-gradient(135deg, #e8f4fd 0%, #e8f8ef 100%);
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 64px;
+    }
+
+    .insight blockquote {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .insight cite {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-style: normal;
+    }
+
+    /* --- POPUP PREVIEW --- */
+    .preview-section {
+      max-width: 860px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .preview-section { grid-template-columns: 1fr; }
+    }
+
+    .preview-copy h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .preview-copy p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .preview-copy ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-copy ul li {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .preview-copy ul li::before {
+      content: '✓ ';
+      color: var(--cta);
+      font-weight: 700;
+    }
+
+    /* Popup mockup */
+    .popup-mockup {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.14);
+      padding: 16px;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .mockup-icon {
+      width: 22px;
+      height: 22px;
+      background: var(--powder-blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .mockup-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .mockup-stats {
+      font-size: 11px;
+      color: var(--danger);
+      margin-left: 30px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .mockup-card {
+      background: #f0f4f8;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .mockup-summary {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .mockup-time {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .mockup-tabs {
+      list-style: none;
+      margin-bottom: 10px;
+    }
+
+    .mockup-tabs li {
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 2px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mockup-tabs li::before {
+      content: '→ ';
+      color: var(--accent);
+    }
+
+    .mockup-btn {
+      width: 100%;
+      padding: 9px;
+      background: var(--cta);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* --- TECH --- */
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* --- TEAM --- */
+    .team-section {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .team-name {
+      display: inline-block;
+      background: var(--powder-blue);
+      color: #2c5f7a;
+      font-size: 22px;
+      font-weight: 800;
+      padding: 10px 32px;
+      border-radius: 40px;
+      margin: 16px 0 8px;
+    }
+
+    .team-track {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .team-cards {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .team-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      text-decoration: none;
+      transition: box-shadow 0.15s, transform 0.1s;
+      min-width: 200px;
+    }
+
+    .team-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .team-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--powder-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #2c5f7a;
+      flex-shrink: 0;
+    }
+
+    .team-member-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .team-linkedin {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-brand" href="#">
+      <div class="nav-icon">🐇</div>
+      Rabbit Hole Ramp
+    </a>
+    <a class="nav-cta" href="#">Add to Chrome</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Pioneering Minds AI · Attention Track</div>
+    <h1>The AI that helps you<br/><span>hop back out.</span></h1>
+    <p>You went down a rabbit hole. We saved your way back — one click and you're exactly where you left off.</p>
+    <a class="hero-cta" href="#">Add to Chrome — it's free</a>
+
+    <div class="flow-visual">
+      <div class="flow-step">
+        <span class="flow-emoji">💻</span>
+        <span class="flow-label">Deep work</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-emoji">🕳️</span>
+        <span class="flow-label">Rabbit hole</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-emoji">🐇</span>
+        <span class="flow-label">We save your spot</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="flow-emoji">🚀</span>
+        <span class="flow-label">One click back</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <div class="before-after">
+    <div class="ba-card before">
+      <div class="ba-label">Before</div>
+      <p>You drift to Reddit. 20 minutes later, returning to work feels overwhelming. You can't remember where you were, what you were building, or what came next. You keep scrolling.</p>
+    </div>
+    <div class="ba-card after">
+      <div class="ba-label">After</div>
+      <p>Rabbit Hole Ramp snapshots your work context the moment you drift. An AI summary tells you exactly where you left off. One click — your tabs reopen, you're back in flow.</p>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-subtitle">Runs quietly in the background. No setup needed.</p>
+    <div class="steps">
+      <div class="step-card">
+        <span class="step-icon">🔍</span>
+        <div class="step-title">Work normally</div>
+        <p class="step-desc">Browse, research, build. The extension watches in the background and learns your work context from open tabs.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-icon">📸</span>
+        <div class="step-title">We detect the drift</div>
+        <p class="step-desc">The moment you slip into a distraction site, we snapshot your work tabs and generate an AI re-entry summary with Claude.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-icon">⚡</span>
+        <div class="step-title">One click back</div>
+        <p class="step-desc">Click the extension. Read your summary. Hit "Restore My Flow" — your tabs reopen and you're back where you left off.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP PREVIEW -->
+  <div class="preview-section">
+    <div class="preview-copy">
+      <h2>Your context, always saved.</h2>
+      <p>The popup shows you exactly what you were working on and where you left off — not just tab titles, but your train of thought.</p>
+      <ul>
+        <li>AI-generated re-entry summary</li>
+        <li>All data stays local — nothing leaves your browser</li>
+        <li>Closes drift tabs, restores work tabs in one click</li>
+        <li>Tracks daily doomscrolling time so you stay aware</li>
+      </ul>
+    </div>
+    <div class="popup-mockup">
+      <div class="mockup-header">
+        <div class="mockup-icon">🐇</div>
+        <span class="mockup-title">Rabbit Hole Ramp</span>
+      </div>
+      <div class="mockup-stats">23 min on social media today</div>
+      <div class="mockup-card">
+        <p class="mockup-summary">You were comparing regularization approaches for your ML project. You'd just opened the sklearn docs for ElasticNet and were about to implement 5-fold cross-validation in your notebook.</p>
+        <div class="mockup-time">Saved 4 minutes ago</div>
+        <ul class="mockup-tabs">
+          <li>Cross-validation — scikit-learn docs</li>
+          <li>ElasticNet — Wikipedia</li>
+          <li>ml-project — GitHub</li>
+        </ul>
+        <div class="mockup-btn">Restore My Flow</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT -->
+  <div class="section">
+    <div class="insight">
+      <blockquote>"Focus apps punish distraction.<br/>We reward the return."</blockquote>
+      <cite>Rabbit Hole Ramp — Attention Track, Grayscale Hackathon 2026</cite>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section" style="text-align:center; margin-bottom: 48px;">
+    <h2 class="section-title">Built with</h2>
+    <p class="section-subtitle">Privacy-first. No data leaves your browser except tab titles and snippets for summarization.</p>
+    <div class="tech-pills">
+      <span class="pill">Chrome Extension (MV3)</span>
+      <span class="pill">Claude Sonnet 4.6</span>
+      <span class="pill">FastAPI (Python)</span>
+      <span class="pill">chrome.storage.local</span>
+      <span class="pill">Anthropic API</span>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="team-section">
+    <h2 class="section-title">The team</h2>
+    <div class="team-name">🐇 Hoppers</div>
+    <p class="team-track">Pioneering Minds AI: Grayscale Hackathon · Attention Track</p>
+    <div class="team-cards">
+      <a class="team-card" href="https://www.linkedin.com/in/manas-agnihotri" target="_blank">
+        <div class="team-avatar">MA</div>
+        <div class="team-info">
+          <div class="team-member-name">Manas Agnihotri</div>
+          <div class="team-linkedin">LinkedIn ↗</div>
+        </div>
+      </a>
+      <a class="team-card" href="https://www.linkedin.com/in/suhaniwadhwa24" target="_blank">
+        <div class="team-avatar">SW</div>
+        <div class="team-info">
+          <div class="team-member-name">Suhani Wadhwa</div>
+          <div class="team-linkedin">LinkedIn ↗</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Rabbit Hole Ramp · Built by Hoppers · All browsing data stays on your device
+  </footer>
+
+</body>
+</html>

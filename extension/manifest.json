@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Rabbit Hole Ramp",
+  "version": "1.0",
+  "description": "Snapshots your work context when you drift, so returning to deep work takes one click.",
+  "permissions": ["tabs", "activeTab", "storage", "alarms", "notifications"],
+  "host_permissions": ["http://localhost:8000/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
