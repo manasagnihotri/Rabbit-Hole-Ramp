@@ -23,8 +23,10 @@ const DRIFT_DOMAINS = [
   }
   
   let currentPhase = "work"; // "work" or "drift"
-  let driftStartTime = null;
-  let workTabsSnapshot = [];
+let driftStartTime = null;
+let workTabsSnapshot = [];
+let activeTabStartTime = Date.now();
+let activeTabUrl = null;
   
   function captureWorkTabs(callback) {
     chrome.tabs.query({}, (tabs) => {
@@ -102,6 +104,23 @@ const DRIFT_DOMAINS = [
         chrome.storage.local.set({ tabHistory: history });
       });
   
+      // Track time spent on previous tab
+    if (activeTabUrl) {
+        const timeSpent = Math.round((Date.now() - activeTabStartTime) / 1000);
+        if (timeSpent > 3) { // ignore blinks under 3 seconds
+          chrome.storage.local.get({ timeLog: {} }, (result) => {
+            const timeLog = result.timeLog;
+            const domain = (() => { try { return new URL(activeTabUrl).hostname.replace("www.", ""); } catch { return "unknown"; } })();
+            timeLog[domain] = (timeLog[domain] || 0) + timeSpent;
+            chrome.storage.local.set({ timeLog });
+          });
+        }
+      }
+  
+      // Reset timer for new tab
+      activeTabUrl = tab.url;
+      activeTabStartTime = Date.now();
+  
       console.log("Tab tracked:", type, entry.domain);
   
       // Phase transition logic
@@ -109,13 +128,24 @@ const DRIFT_DOMAINS = [
         currentPhase = "work";
         driftStartTime = null;
         chrome.alarms.clear("driftAlarm");
-      } else if (type === "drift") {
+    } else if (type === "drift") {
         if (currentPhase === "work") {
           // Just entered drift — start the clock
           currentPhase = "drift";
           driftStartTime = Date.now();
           chrome.alarms.create("driftAlarm", { delayInMinutes: DRIFT_THRESHOLD_SECONDS / 60 });
           console.log("Drift detected! Alarm set for", DRIFT_THRESHOLD_SECONDS, "seconds");
+        }
+      } else if (type === "work" || type === "neutral") {
+        // Came back to work quickly — cancel drift if under 10 seconds
+        if (currentPhase === "drift" && driftStartTime) {
+          const secondsOnDrift = (Date.now() - driftStartTime) / 1000;
+          if (secondsOnDrift < 10) {
+            console.log("Drift cancelled — only", Math.round(secondsOnDrift), "seconds, accidental click");
+            currentPhase = "work";
+            driftStartTime = null;
+            chrome.alarms.clear("driftAlarm");
+          }
         }
       }
     });

@@ -6,8 +6,28 @@
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <h2>🐇 Rabbit Hole Ramp</h2>
-    <p>Watching your tabs...</p>
+    <div id="app">
+      <!-- Header -->
+      <div class="header">
+        <span class="logo">🐇</span>
+        <span class="title">Rabbit Hole Ramp</span>
+      </div>
+
+      <!-- No snapshot state -->
+      <div id="empty-state" class="empty-state hidden">
+        <p>No drift detected yet.</p>
+        <p class="sub">Keep working — we'll catch you if you fall down a rabbit hole.</p>
+      </div>
+
+      <!-- Re-entry card -->
+      <div id="snapshot-card" class="snapshot-card hidden">
+        <div class="card-label">🧠 You were working on...</div>
+        <div id="summary-text" class="summary-text">Loading summary...</div>
+        <div id="tab-list" class="tab-list"></div>
+        <button id="restore-btn" class="restore-btn">↩ Restore My Work Tabs</button>
+        <div class="timestamp" id="timestamp"></div>
+      </div>
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>
